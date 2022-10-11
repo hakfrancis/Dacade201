@@ -6,7 +6,8 @@ This is a decentralised application that allows it's users to perform the follow
 3. Stake your NFT into pot created by other users
 
 **Note**
-- Each pot created has a limit to the number of NFTs it can take in. 
+- Each pot created has a limit to the number of NFTs it can take in.
+- Pot limit must be greater than 2.
 - Each pot cannot take in more than it's limit.
 - Anyone can stake as many NFTs as possible to increase their chance of winning (just ensure you own the NFTs).
 - Once the pot is filled, a winner is randomly selected (the last staker triggers the pot to select the winner).
