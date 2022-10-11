@@ -10,16 +10,16 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract StakersContract is IERC721Receiver {
-
     using Counters for Counters.Counter;
-    
+
     IERC721 immutable nftContract;
     Counters.Counter private potCounter;
     uint256 randNonce = 0;
 
     enum Status {
         Open,
-        Closed
+        Closed,
+        Filled
     }
 
     struct Pot {
@@ -32,7 +32,7 @@ contract StakersContract is IERC721Receiver {
         Status status;
     }
 
-    mapping(uint256 => Pot) allPot;
+    mapping(uint256 => Pot) private allPot;
 
     event PotCreated(string name, address indexed creator);
 
@@ -41,28 +41,31 @@ contract StakersContract is IERC721Receiver {
     }
 
     // Function to help create a new pot
-    function createPot(string memory _potName, uint256 _size) public {
-        require(_size >= 3, "Pot size must be greater than 2");
-        uint256 potId = potCounter.current();
-        uint256[] memory tokens;
-        address[] memory stakers;
-        Status _status;
-        allPot[potId] = Pot(
-            _potName,
-            _size,
-            msg.sender,
-            address(0),
-            tokens,
-            stakers,
-            _status
+    function createPot(string calldata _potName, uint256 _size) public {
+        require(bytes(_potName).length > 0, "Empty pot name");
+        require(
+            _size >= 3 && _size <= 10,
+            "Pot size must be greater than 2 but not more than 10"
         );
-        emit PotCreated(_potName, msg.sender);
+        uint256 potId = potCounter.current();
         potCounter.increment();
+
+        Pot storage newPot = allPot[potId];
+        newPot.name = _potName;
+        newPot.size = _size;
+        newPot.creator = msg.sender;
+
+        emit PotCreated(_potName, msg.sender);
     }
 
-    // Functino to stake token into a pot
+    /** @dev Functino to stake token into a pot
+     @notice The transaction will revert if any of the following conditions are met:
+        1. The NFT does not exists
+        2. The caller of the function is not the NFT's owner or approved operator
+    */
     function stake(uint256 _potId, uint256 _tokenId) public {
         Pot storage pot = allPot[_potId];
+        require(pot.status != Status.Filled, "Pot is currently filled");
         require(pot.tokens.length < pot.size, "Pot already filled up");
         nftContract.safeTransferFrom(msg.sender, address(this), _tokenId);
         pot.tokens.push(_tokenId);
@@ -71,25 +74,45 @@ contract StakersContract is IERC721Receiver {
 
         // last staker shakes the pot
         if (pot.tokens.length == pot.size) {
-            shakePot(_potId);
+            uint256 winnerIndex = uint256(
+                keccak256(
+                    abi.encodePacked(block.timestamp, msg.sender, randNonce)
+                )
+            ) % pot.tokens.length;
+            randNonce++;
+            pot.winner = pot.stakers[winnerIndex];
+            pot.status = Status.Filled;
         }
     }
 
-    // Function to shake pot and randomly select winner
-    function shakePot(uint256 _potId) public {
+    /**
+     * @dev allow a pot's current winner or creator to transfer NFTs won to the pot's winner
+     */
+    function transferNFTsWon(uint256 _potId) external {
         Pot storage pot = allPot[_potId];
-        uint256 winningIndex = getWinningIndex(pot.tokens.length);
-        address winner = pot.stakers[winningIndex];
-        pot.winner = winner;
-        pot.status = Status.Closed;
-
+        require(
+            pot.status == Status.Filled,
+            "There are no winner that has been selected yet for this pot"
+        );
+        require(
+            pot.winner == msg.sender || pot.creator == msg.sender,
+            "Unauthorized caller"
+        );
+        address winner = pot.winner;
         // Transfer all tokens in pot to winner
-        for (uint256 i = 0; i < pot.tokens.length; i++) {
+        for (uint256 i = 0; i < pot.tokens.length; ) {
             nftContract.safeTransferFrom(address(this), winner, pot.tokens[i]);
+            unchecked {
+                i++;
+            }
         }
+        delete pot.tokens;
+        delete pot.stakers;
+        delete pot.winner;
+        pot.status = Status.Closed;
     }
 
-    // Return details of a single pot
+    /// @return details of a single pot
     function getOnePot(uint256 _potId)
         public
         view
@@ -120,15 +143,6 @@ contract StakersContract is IERC721Receiver {
             allPots[i] = allPot[i];
         }
         return allPots;
-    }
-
-    // Helper function to randomly select winner
-    function getWinningIndex(uint256 _length) public returns (uint256) {
-        uint256 randomIndex = uint256(
-            keccak256(abi.encodePacked(block.timestamp, msg.sender, randNonce))
-        ) % _length;
-        randNonce++;
-        return randomIndex;
     }
 
     // Override required by solidity
