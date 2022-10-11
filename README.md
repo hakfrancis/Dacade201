@@ -13,3 +13,6 @@ This is a decentralised application that allows it's users to perform the follow
 - Once winner is selected, all NFTs in the pot is sent to winner.
 - Pot is then set to closed (No longer accepting NFTs)
 
+# Demo Link
+[Stakers link](https://hakfrancis.github.io/Dacade201/)
+
