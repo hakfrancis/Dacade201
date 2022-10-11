@@ -1,0 +1,217 @@
+@import url("https://fonts.googleapis.com/css2?family=Gemunu+Libre&display=swap");
+
+* {
+  font-family: "Gemunu Libre", sans-serif;
+}
+body {
+  min-height: 100vh;
+  width: 100vw;
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  position: relative;
+}
+button {
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  min-width: 100px;
+}
+.marketplace {
+  padding-top: 100px;
+}
+
+/* Nav */
+.nav {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+.logo_img {
+  width: 50px;
+}
+.logo_name {
+  color: black;
+  margin-left: 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.nav button {
+  border-radius: 32px;
+  background-color: #dddd2c;
+  color: black;
+}
+
+/* Cover JS */
+.cover_page {
+  position: absolute;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: black;
+  top: 0px;
+  left: 0px;
+  font-size: 16px;
+  height: 100%;
+  width: 100vw;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+.cover_image_lg {
+  margin: auto;
+}
+
+.cover_header {
+  box-sizing: border-box;
+  box-shadow: 2px 0px 5px #4d4c4c44;
+  background-color: #ffd700;
+  color: rgb(32, 32, 0);
+  text-align: left;
+  width: 550px;
+  height: 100%;
+  padding: 0px 2% 0px 4%;
+  border-top-right-radius: 70%;
+  border-bottom-right-radius: 70%;
+}
+.cover_page h1 {
+  text-transform: capitalize;
+  font-weight: bolder;
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+.cover_page button {
+  margin-top: 50px;
+  border-radius: 32px;
+  background-color: black;
+}
+
+/* CARD JS */
+.wine_container {
+  width: 300px;
+  height: 440px;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  box-shadow: 0px 0px 7px #b1a8a8d3;
+  position: relative;
+}
+
+.wine_image {
+  width: 100%;
+  height: 80%;
+  overflow: hidden;
+}
+
+.wine_image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wine_details {
+  width: 100%;
+  text-align: center;
+}
+
+.wine_details h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.wine_id {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ADD JS */
+
+.add_wine_btn {
+  border-radius: 28px;
+  background-color: #fce730;
+  color: black;
+}
+
+.modal_footer {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center;
+  gap: 30px;
+}
+.create_btn {
+  margin-left: 29px;
+  border-radius: 33px;
+  background-color: #a19700;
+  border: thin solid #ffffff;
+}
+.create_btn:disabled {
+  background-color: #5c5c5c7a;
+  border: thin solid #ffffff31;
+}
+.close_btn {
+  color: #4d5a00;
+  border-radius: 32px;
+  background: none;
+  border: thin solid #4d5a00;
+}
+
+.pots {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pot {
+  width: 390px;
+  height: 390px;
+  margin: 20px;
+  position: relative;
+  box-shadow: 0 0 5px rgb(170, 165, 165);
+  border-radius: 10px;
+}
+
+.pot img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.pot_info_button {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  background-color: yellow;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 0 5px rgb(117, 107, 107);
+  cursor: pointer;
+}
+
+.pot-details {
+  display: flex;
+  flex-direction: column;  
+}
+
+.pd {
+  display: flex;  
+  font-size: 20px;
+}
+
+.pd-label {
+  font-weight: 600;
+  margin: 3px;
+}
+
+.pd-desc {  
+  margin: 3px 20px;
+}
+
+.pd-sub {
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  align-items: center;
+  margin-top: 20px;
+}
